@@ -33,6 +33,7 @@ type NavUserProps = {
 };
 
 export function UserAvatar({
+  avatarUrl,
   initials,
   className,
 }: {
@@ -40,16 +41,15 @@ export function UserAvatar({
   initials: string;
   className?: string;
 }) {
-  return (
-    <div
-      className={cn(
-        "bg-sidebar-accent text-sidebar-accent-foreground flex aspect-square items-center justify-center rounded-lg text-xs font-semibold",
-        className,
-      )}
-    >
-      {initials}
-    </div>
+  const classes = cn(
+    "bg-sidebar-accent text-sidebar-accent-foreground flex aspect-square items-center justify-center overflow-hidden rounded-lg text-xs font-semibold",
+    className,
   );
+  if (avatarUrl) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={avatarUrl} alt="" className={cn(classes, "object-cover")} />;
+  }
+  return <div className={classes}>{initials}</div>;
 }
 
 export function NavUser({ user }: NavUserProps) {
@@ -67,7 +67,7 @@ export function NavUser({ user }: NavUserProps) {
         <div className="flex items-center gap-1">
           <SidebarMenuButton asChild size="lg" tooltip="Mi usuario" className="flex-1">
             <Link href="/dashboard/profile">
-              <UserAvatar initials={initials} className="size-8" />
+              <UserAvatar avatarUrl={user?.avatarUrl} initials={initials} className="size-8" />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{displayName}</span>
                 {displayEmail && (
@@ -99,7 +99,7 @@ export function NavUser({ user }: NavUserProps) {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-2 py-1.5 text-left text-sm">
-                <UserAvatar initials={initials} className="size-8" />
+                <UserAvatar avatarUrl={user?.avatarUrl} initials={initials} className="size-8" />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{displayName}</span>
                   {displayEmail && (

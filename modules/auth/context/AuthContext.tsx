@@ -35,6 +35,8 @@ type AuthContextValue = {
   refreshSession: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   saveProfile: (input: Pick<SystemUserInput, "name" | "phone" | "businessName">) => Promise<void>;
+  uploadAvatar: (file: File) => Promise<void>;
+  completeOnboarding: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -63,7 +65,7 @@ async function apiRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
     ...init,
     credentials: "same-origin",
     headers: {
-      ...(init.body ? { "content-type": "application/json" } : {}),
+      ...(typeof init.body === "string" ? { "content-type": "application/json" } : {}),
       ...init.headers,
     },
   });
@@ -168,6 +170,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(await updateOwnProfile(input));
   }, [session]);
 
+  const uploadAvatar = useCallback(async (file: File) => {
+    const body = new FormData();
+    body.append("file", file);
+    setUser(await apiRequest<SystemUser>("/api/profile/avatar", { method: "POST", body }));
+    broadcast();
+  }, [broadcast]);
+
+  const completeOnboarding = useCallback(async () => {
+    setUser(await apiRequest<SystemUser>("/api/profile/onboarding", { method: "POST" }));
+    broadcast();
+  }, [broadcast]);
+
   const value = useMemo<AuthContextValue>(() => ({
     session,
     user,
@@ -179,6 +193,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshSession,
     refreshProfile,
     saveProfile,
+    uploadAvatar,
+    completeOnboarding,
   }), [
     session,
     user,
@@ -190,6 +206,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refreshSession,
     refreshProfile,
     saveProfile,
+    uploadAvatar,
+    completeOnboarding,
   ]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

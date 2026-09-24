@@ -28,6 +28,7 @@ import {
 } from "@/components/dashboard/dashboard-role-context";
 import { RoleSwitcher } from "@/components/dashboard/RoleSwitcher";
 import { useAuth } from "@/modules/auth/context/AuthContext";
+import { OnboardingGate } from "@/modules/auth/components/OnboardingGate";
 import { useEffect } from "react";
 
 const AppSidebar = dynamic(
@@ -77,6 +78,7 @@ function DashboardHeader({ user }: { user: HeaderUser }) {
                 className="flex items-center justify-center rounded-lg focus-visible:outline-hidden"
               >
                 <UserAvatar
+                  avatarUrl={user?.avatarUrl}
                   initials={initials}
                   className="size-8 cursor-pointer border transition-opacity hover:opacity-80"
                 />
@@ -85,7 +87,7 @@ function DashboardHeader({ user }: { user: HeaderUser }) {
             <DropdownMenuContent align="end" className="mt-1 w-56 rounded-lg" showHeader={false}>
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-2 py-1.5 text-left text-sm">
-                  <UserAvatar initials={initials} className="size-8" />
+                  <UserAvatar avatarUrl={user?.avatarUrl} initials={initials} className="size-8" />
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">
                       {user?.username ?? "Invitado"}
@@ -124,7 +126,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
     username: profile?.name ?? "",
     email: profile?.email ?? "",
     role,
-    avatarUrl: null as string | null,
+    avatarUrl: profile?.avatarUrl || null,
   };
 
   return (
@@ -168,6 +170,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <DashboardRoleProvider>
       <DashboardShell>{children}</DashboardShell>
+      {/* La bienvenida (foto y passkey) se muestra una sola vez por cuenta. */}
+      {!user.onboardingCompleted ? <OnboardingGate user={user} /> : null}
     </DashboardRoleProvider>
   );
 }

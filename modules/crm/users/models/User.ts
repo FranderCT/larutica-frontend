@@ -10,13 +10,15 @@ export type SystemUser = {
   phone: string;
   businessName: string;
   status: UserStatus;
+  avatarUrl: string;
+  onboardingCompleted: boolean;
   createdAt: string;
   updatedAt: string;
 };
 
 export type SystemUserInput = Omit<
   SystemUser,
-  "id" | "createdAt" | "updatedAt"
+  "id" | "avatarUrl" | "onboardingCompleted" | "createdAt" | "updatedAt"
 > & { password?: string };
 
 export const emptyUserInput: SystemUserInput = {
