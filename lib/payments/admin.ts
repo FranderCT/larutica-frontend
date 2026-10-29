@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { ApiError } from "@/lib/api/errors";
+import { promotionEndsAt } from "@/lib/promotions/window";
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -41,6 +42,23 @@ export type AgencyBalance = {
   payouts: number;
   adjustments: number;
   balance: number;
+};
+
+export type AdminPromotionPaymentRow = {
+  paymentId: string;
+  status: string;
+  amount: number;
+  currency: string;
+  refundedAmount: number;
+  createdAt: string;
+  paidAt: string | null;
+  refundedAt: string | null;
+  /** Fin de la ventana de 7 días de este cobro. Null si nunca se pagó. */
+  expiresAt: string | null;
+  publicationId: string;
+  publicationTitle: string;
+  agencyId: string;
+  agencyName: string;
 };
 
 export type Settlement = {
@@ -209,6 +227,60 @@ export async function listPaymentRows(admin: SupabaseClient, filters: PaymentFil
     agencyId: row.agency_id,
     agencyName: row.agency_name,
   }));
+}
+
+type PromotionPaymentRowDb = {
+  id: string;
+  status: string;
+  amount: number | string;
+  currency: string;
+  refunded_amount: number | string;
+  created_at: string;
+  paid_at: string | null;
+  refunded_at: string | null;
+  publications: {
+    id: string;
+    title: string | null;
+    agency_id: string;
+    agencies: { commercial_name: string } | { commercial_name: string }[] | null;
+  } | null;
+};
+
+const PROMOTION_COLUMNS =
+  "id, status, amount, currency, refunded_amount, created_at, paid_at, refunded_at, publications!inner ( id, title, agency_id, agencies ( commercial_name ) )";
+
+export async function listPromotionPayments(
+  admin: SupabaseClient,
+  filters: PaymentFilters,
+): Promise<AdminPromotionPaymentRow[]> {
+  let query = admin.from("publication_promotion_payments").select(PROMOTION_COLUMNS)
+    .order("created_at", { ascending: false })
+    .range(filters.offset ?? 0, (filters.offset ?? 0) + (filters.limit ?? 500) - 1);
+  if (filters.agencyId) query = query.eq("publications.agency_id", filters.agencyId);
+  if (filters.status) query = query.eq("status", filters.status);
+  if (filters.from) query = query.gte("created_at", filters.from);
+  if (filters.to) query = query.lt("created_at", filters.to);
+  const { data, error } = await query;
+  if (error) throw error;
+  return ((data ?? []) as unknown as PromotionPaymentRowDb[]).flatMap((row) => {
+    const publication = one(row.publications);
+    if (!publication) return [];
+    return [{
+      paymentId: row.id,
+      status: row.status,
+      amount: cents(row.amount),
+      currency: row.currency,
+      refundedAmount: cents(row.refunded_amount),
+      createdAt: row.created_at,
+      paidAt: row.paid_at,
+      refundedAt: row.refunded_at,
+      expiresAt: row.paid_at ? promotionEndsAt(Date.parse(row.paid_at)) : null,
+      publicationId: publication.id,
+      publicationTitle: publication.title ?? "",
+      agencyId: publication.agency_id,
+      agencyName: one(publication.agencies)?.commercial_name ?? "",
+    }];
+  });
 }
 
 type BalanceRowDb = {

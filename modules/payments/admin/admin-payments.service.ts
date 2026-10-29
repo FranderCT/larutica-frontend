@@ -1,12 +1,13 @@
 import { apiFetch } from "@/lib/api/browser-fetch";
 import type {
   AdminPaymentRow,
+  AdminPromotionPaymentRow,
   AgencyBalance,
   Settlement,
   SettlementInput,
 } from "@/lib/payments/admin";
 
-export type { AdminPaymentRow, AgencyBalance, Settlement, SettlementInput };
+export type { AdminPaymentRow, AdminPromotionPaymentRow, AgencyBalance, Settlement, SettlementInput };
 
 export type PaymentFilters = {
   agencyId?: string;
@@ -51,5 +52,18 @@ export async function patchAgencyCommission(agencyId: string, commissionRate: nu
     headers: { "Content-Type": "application/json" },
     credentials: "include",
     body: JSON.stringify({ commissionRate }),
+  }));
+}
+
+export async function getAdminPromotionPayments(filters: PaymentFilters): Promise<AdminPromotionPaymentRow[]> {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(filters)) if (value) params.set(key, value);
+  return parse(await apiFetch(`/api/admin/promotions${params.size ? `?${params}` : ""}`, { credentials: "include" }));
+}
+
+export async function refundPromotionPayment(paymentId: string): Promise<void> {
+  await parse(await apiFetch(`/api/admin/promotions/${encodeURIComponent(paymentId)}/refund`, {
+    method: "POST",
+    credentials: "include",
   }));
 }

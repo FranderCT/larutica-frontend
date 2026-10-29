@@ -15,6 +15,7 @@ import {
   PROMOTION_PRICE_USD,
   canStartPromotion,
   decidePromotionSettlement,
+  promotionEndsAt,
   type PromotionDecision,
 } from "@/lib/promotions/window";
 
@@ -141,6 +142,30 @@ async function applyDecision(
     last_event: event,
   }).eq("id", payment.id).eq("status", payment.status);
   if (paymentError) throw paymentError;
+}
+
+/**
+ * Reembolso total hecho por un admin. Si la ventana de la publicación todavía es la de este cobro,
+ * se cierra; si un cobro posterior la extendió, se conserva.
+ */
+export async function refundPromotionByAdmin(admin: SupabaseClient, paymentId: string): Promise<void> {
+  const { data, error } = await admin.from("publication_promotion_payments").select(`${PAYMENT_COLUMNS}, paid_at`)
+    .eq("id", paymentId).maybeSingle();
+  if (error) throw error;
+  const payment = data as (PromotionPaymentRow & { paid_at: string | null }) | null;
+  if (!payment) throw new ApiError("El pago de la promoción no existe.", 404);
+  if (payment.status === "refunded") throw new ApiError("Este pago ya fue reembolsado.", 409);
+  if (payment.status !== "paid") throw new ApiError("Solo se puede reembolsar un pago ya cobrado.", 409);
+
+  await refundPromotionPayment(admin, payment, { source: "admin-refund" });
+
+  const windowEnd = payment.paid_at ? Date.parse(promotionEndsAt(Date.parse(payment.paid_at))) : NaN;
+  const current = await loadPublicationWindow(admin, payment.publication_id);
+  if (current && Date.parse(current) === windowEnd) {
+    const { error: closeError } = await admin.from("publications").update({ promoted_until: null })
+      .eq("id", payment.publication_id);
+    if (closeError) throw closeError;
+  }
 }
 
 /** Crea o reutiliza la intención de 12 USD. El navegador no envía el monto. */

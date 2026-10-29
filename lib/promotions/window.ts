@@ -56,3 +56,18 @@ export function decidePromotionSettlement(input: {
 export function settlementTarget(reservationPayment: { id: string } | null): "reservation" | "promotion" {
   return reservationPayment ? "reservation" : "promotion";
 }
+
+export const PROMOTION_EXPIRING_SOON_MS = 48 * 60 * 60 * 1000;
+
+export type PromotionPeriodState = "active" | "expiring" | "expired" | "none";
+
+/** Estado de la ventana de un cobro: sin pago aceptado no hay periodo. Un reembolso la cierra. */
+export function promotionPeriodState(
+  payment: { status: string; expiresAt: string | null },
+  now: number,
+): PromotionPeriodState {
+  if (payment.status !== "paid" || !payment.expiresAt) return "none";
+  const end = Date.parse(payment.expiresAt);
+  if (!Number.isFinite(end) || end <= now) return "expired";
+  return end - now <= PROMOTION_EXPIRING_SOON_MS ? "expiring" : "active";
+}

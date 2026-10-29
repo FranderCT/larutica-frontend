@@ -11,9 +11,11 @@ import { usePreferences } from "@/lib/preferences/Preferences";
 import { PublicationStatusBadge } from "@/modules/publications/components/PublicationStatusBadge";
 import { usePublications } from "@/modules/publications/hooks/usePublications";
 import { isPromotionActive } from "@/lib/promotions/window";
+import { AdminPromotionsPage } from "./AdminPromotionsPage";
 
 export function AgencyPromotionsPage() {
   const { role } = useDashboardRole();
+  if (role === "Admin") return <AdminPromotionsPage />;
   if (role !== "Agencia") {
     return (
       <DashboardSectionPage

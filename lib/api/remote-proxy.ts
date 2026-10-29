@@ -2,7 +2,7 @@ function isSharedServiceRequest(request: Request, url: URL): boolean {
   if (/^\/api\/(?:maps|payments)(?:\/|$)/.test(url.pathname)
     || /^\/api\/reservations\/[^/]+\/payment(?:\/|$)/.test(url.pathname)
     || /^\/api\/publications\/[^/]+\/promotion\/payment(?:\/|$)/.test(url.pathname)
-    || /^\/api\/admin\/(?:payments|settlements)(?:\/|$)/.test(url.pathname)
+    || /^\/api\/admin\/(?:payments|settlements|promotions)(?:\/|$)/.test(url.pathname)
     || url.pathname === "/api/publications/journey-status") return true;
   // The server that calculates a route also verifies its signature on save.
   if ((request.method === "POST" && url.pathname === "/api/publications")
