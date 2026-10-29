@@ -1,16 +1,18 @@
 "use client";
 
-import { Download, RefreshCw, SlidersHorizontal } from "lucide-react";
+import { Download, MoreHorizontal, Undo2, RefreshCw, SlidersHorizontal } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { DashboardBreadcrumb } from "@/components/dashboard/DashboardBreadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageHeading } from "@/components/ui/page-heading";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { TablePagination, usePagedRows } from "@/components/ui/table-pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { usePreferences } from "@/lib/preferences/Preferences";
 import { promotionPeriodState, type PromotionPeriodState } from "@/lib/promotions/window";
@@ -84,6 +86,8 @@ export function AdminPromotionsPage() {
 
   const visible = useMemo(() => (agencyId ? rows.filter((row) => row.agencyId === agencyId) : rows), [rows, agencyId]);
   const periods = visible.map((row) => promotionPeriodState(row, now));
+  const periodById = new Map(visible.map((row, index) => [row.paymentId, periods[index]]));
+  const paged = usePagedRows(visible);
 
   const totals = visible.reduce((sum, row, index) => ({
     net: sum.net + (row.status === "paid" || row.status === "refunded" ? row.amount - row.refundedAmount : 0),
@@ -153,8 +157,8 @@ export function AdminPromotionsPage() {
         </TableRow></TableHeader>
         <TableBody>
           {visible.length === 0 ? <TableRow><TableCell colSpan={7} className="py-8 text-center text-muted-foreground">{loading ? t("Cargando…") : t("No hay pagos de promociones con estos filtros.")}</TableCell></TableRow> : null}
-          {visible.map((row, index) => {
-            const period = periods[index];
+          {paged.pageRows.map((row) => {
+            const period = periodById.get(row.paymentId) ?? "none";
             const label = period === "none" ? STATUS_LABELS[row.status] ?? row.status : PERIOD_LABELS[period];
             return <TableRow key={row.paymentId}>
               <TableCell className="font-medium">{row.agencyName}</TableCell>
@@ -167,13 +171,21 @@ export function AdminPromotionsPage() {
                 {row.refundedAmount ? <span className="block text-xs text-muted-foreground">{t("Reembolsado")}: {money(row.refundedAmount)}</span> : null}
               </TableCell>
               <TableCell className="text-right">
-                {row.status === "paid" ? <Button size="sm" variant="ghost" onClick={() => { setRefundError(""); setRefunding(row); }}>{t("Reembolsar")}</Button> : null}
+                {row.status === "paid" ? <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="size-8"><MoreHorizontal className="size-4" aria-hidden="true" /><span className="sr-only">{t("Más acciones")} · {row.publicationTitle || row.agencyName}</span></Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => { setRefundError(""); setRefunding(row); }}><Undo2 className="size-4" aria-hidden="true" />{t("Reembolsar")}</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu> : null}
               </TableCell>
             </TableRow>;
           })}
         </TableBody>
       </Table>
     </div>
+    <TablePagination page={paged.page} pageSize={paged.pageSize} total={paged.total} totalPages={paged.totalPages} onPageChange={paged.setPage} />
     {rows.length >= 500 ? <p className="text-sm text-muted-foreground">{t("Se muestran los 500 más recientes; usa los filtros para acotar.")}</p> : null}
 
     <Dialog open={!!refunding} onOpenChange={(open) => { if (!open && !refundBusy) setRefunding(null); }}>
