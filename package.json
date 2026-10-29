@@ -12,7 +12,7 @@
     "prebuild": "node scripts/check-runtime.mjs && node scripts/prepare-map-worker.mjs",
     "build": "vinext build",
     "start": "vinext start",
-    "test": "npm run build && node --experimental-strip-types --test tests/rendered-html.test.mjs tests/auth-contract.test.mjs tests/privacy-consent.test.mjs tests/privacy-api.test.mjs tests/remote-proxy.test.mjs tests/reservations-contract.test.mjs tests/booking-return.test.mjs tests/traveler-saved-rating.test.mjs tests/browser-fetch.test.mjs && npm run test:payments && npm run test:mail",
+    "test": "npm run build && node --experimental-strip-types --test tests/rendered-html.test.mjs tests/auth-contract.test.mjs tests/privacy-consent.test.mjs tests/privacy-api.test.mjs tests/remote-proxy.test.mjs tests/reservations-contract.test.mjs tests/booking-return.test.mjs tests/traveler-saved-rating.test.mjs tests/browser-fetch.test.mjs tests/analytics-reservations.test.mjs && npm run test:payments && npm run test:mail",
     "test:payments": "node --import ./tests/mail/register.mjs --test tests/payments.test.mjs",
     "test:mail": "node --experimental-strip-types --test tests/trip-email.test.mjs tests/mail/transport.test.mjs tests/mail/cli.test.mjs tests/mail/relay.test.mjs && node --import ./tests/mail/register.mjs --test tests/mail/flows.test.mjs tests/mail/diagnostic.test.mjs tests/mail/payments-flow.test.mjs tests/mail/admin-payments.test.mjs",
     "design:check": "node scripts/check-design.mjs",
