@@ -112,9 +112,9 @@ export default function AdminPublicationDetail({ publicationId }: AdminPublicati
                 <p className="mt-1 text-2xl font-semibold text-primary">{publication.pricePerPerson !== null ? `USD ${publication.pricePerPerson.toFixed(2)}` : "—"}</p>
               </div>
               <dl className="flex flex-wrap gap-x-8 gap-y-4">
-                <InfoItem icon={<MapPin size={16} aria-hidden="true" />} label="Destino" value={publication.destination} />
-                <InfoItem icon={<Clock3 size={16} aria-hidden="true" />} label="Duración" value={publication.durationMinutes !== null ? durationLabel(publication.durationMinutes) : null} />
-                <InfoItem icon={<Users size={16} aria-hidden="true" />} label="Capacidad" value={publication.defaultCapacity !== null ? `${publication.defaultCapacity} ${t("personas")}` : null} />
+                <InfoItem icon={<MapPin size={16} aria-hidden="true" />} label={t("Destino")} value={publication.destination} />
+                <InfoItem icon={<Clock3 size={16} aria-hidden="true" />} label={t("Duración")} value={publication.durationMinutes !== null ? durationLabel(publication.durationMinutes) : null} />
+                <InfoItem icon={<Users size={16} aria-hidden="true" />} label={t("Capacidad")} value={publication.defaultCapacity !== null ? `${publication.defaultCapacity} ${t("personas")}` : null} />
               </dl>
             </div>
           </div>
@@ -141,7 +141,7 @@ export default function AdminPublicationDetail({ publicationId }: AdminPublicati
 
         <Tabs.Content value="overview" className={panelClassName}>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <TextSection title="Descripción" value={publication.description} />
+            <TextSection title={t("Descripción")} value={publication.description} />
             <div className="space-y-6 lg:border-l lg:border-border lg:pl-8">
               <section aria-labelledby="publication-agency-heading">
                 <h2 id="publication-agency-heading" className="!m-0 !text-sm !font-semibold !leading-6 !tracking-normal">{t("Agencia responsable")}</h2>
@@ -158,8 +158,8 @@ export default function AdminPublicationDetail({ publicationId }: AdminPublicati
                 </div>
               </section>
               <dl className="space-y-5">
-                <InfoItem icon={<CalendarDays size={16} aria-hidden="true" />} label="Registro" value={formatDate(publication.createdAt, language)} />
-                <InfoItem label="Idiomas" value={publication.languages.map(item => item.name).join(", ") || t("Sin idiomas registrados")} />
+                <InfoItem icon={<CalendarDays size={16} aria-hidden="true" />} label={t("Registro")} value={formatDate(publication.createdAt, language)} />
+                <InfoItem label={t("Idiomas")} value={publication.languages.map(item => item.name).join(", ") || t("Sin idiomas registrados")} />
               </dl>
             </div>
           </div>
@@ -167,11 +167,11 @@ export default function AdminPublicationDetail({ publicationId }: AdminPublicati
 
         <Tabs.Content value="details" className={panelClassName}>
           <div className="mb-6 border-b border-border pb-6">
-            <h2 className="lr-section-title">Trayecto</h2><JourneyView journey={publication.journey} meetingPoint={publication.meetingPoint}/>
+            <h2 className="lr-section-title">{t("Trayecto")}</h2><JourneyView journey={publication.journey} meetingPoint={publication.meetingPoint}/>
           </div>
           <div className="grid gap-8 md:grid-cols-2">
-            <TextSection title="Qué incluye" value={publication.included} />
-            <TextSection title="Qué no incluye" value={publication.notIncluded} />
+            <TextSection title={t("Qué incluye")} value={publication.included} />
+            <TextSection title={t("Qué no incluye")} value={publication.notIncluded} />
           </div>
         </Tabs.Content>
 

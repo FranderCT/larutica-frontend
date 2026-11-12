@@ -188,7 +188,7 @@ export default function MyAgencyPage() {
                 size={14}
               />
 
-              Editar agencia
+              {t("\r\n\r\n              Editar agencia\r\n            ")}
             </button>
           ) : undefined
         }
@@ -232,7 +232,7 @@ export default function MyAgencyPage() {
                   {agency.logoUrl ? (
                     <img
                       src={agency.logoUrl}
-                      alt="Logo de la agencia"
+                      alt={t("Logo de la agencia")}
                       className="h-full w-full object-contain"
                     />
                   ) : (
@@ -283,7 +283,7 @@ export default function MyAgencyPage() {
           {agency.coverUrl ? (
             <img
               src={agency.coverUrl}
-              alt="Portada de la agencia"
+              alt={t("Portada de la agencia")}
               className="h-full w-full object-cover"
             />
           ) : (

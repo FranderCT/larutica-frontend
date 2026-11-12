@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function PrivacyPolicyContent() {
   return (
-    <div className="legal-content">
+    <div className="legal-content" lang="es">
         <p className="legal-notice">Tu información permite crear tu cuenta y utilizar las funciones que eliges. Esta política explica qué datos recibimos, quién puede acceder a ellos y cómo puedes solicitar su corrección o eliminación.</p>
 
         <section>

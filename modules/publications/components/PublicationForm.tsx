@@ -477,7 +477,7 @@ export function PublicationForm({
         <div className="space-y-4">
           <section className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm sm:p-5">
             <StepHeading
-              title="Información básica"
+              title={t("Información básica")}
             />
 
             <div className="mt-4">
@@ -554,7 +554,7 @@ export function PublicationForm({
 
             <div className="mt-4 space-y-3">
               <FormField
-                label="Nombre de la publicación"
+                label={t("Nombre de la publicación")}
                 required
               >
                 <Input
@@ -582,7 +582,7 @@ export function PublicationForm({
               </FormField>
 
               <FormField
-                label="Descripción"
+                label={t("Descripción")}
                 required
               >
                 <Textarea
@@ -650,7 +650,7 @@ export function PublicationForm({
           onChange={journey => setValue(previous => ({...previous, journey,
             destination: journey?.points.at(-1)?.name ?? previous.destination}))}/>
         <StepActions submitting={submitting} showBack onBack={goBack} onCancel={onCancel} onContinue={goNext}/>
-        <Button type="button" variant="ghost" disabled={submitting} onClick={()=>handleSubmit("DRAFT")}>Guardar trayecto como borrador</Button>
+        <Button type="button" variant="ghost" disabled={submitting} onClick={()=>handleSubmit("DRAFT")}>{t("Guardar trayecto como borrador")}</Button>
       </div> : null}
 
       {/* =====================================================
@@ -662,12 +662,12 @@ export function PublicationForm({
         <div className="space-y-4">
           <section className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm sm:p-5">
             <StepHeading
-              title="Detalles del servicio"
+              title={t("Detalles del servicio")}
             />
 
             <div className="mt-4 grid gap-3 md:grid-cols-3">
               <FormField
-                label="Precio por persona"
+                label={t("Precio por persona")}
                 required
               >
                 <div className="relative">
@@ -720,7 +720,7 @@ export function PublicationForm({
               </FormField>
 
               <FormField
-                label="Duración"
+                label={t("Duración")}
                 required
               >
                 <div className="grid grid-cols-2 gap-3">
@@ -761,7 +761,7 @@ export function PublicationForm({
               </FormField>
 
               <FormField
-                label="Capacidad predeterminada"
+                label={t("Capacidad predeterminada")}
                 required
               >
                 <div className="relative">
@@ -870,7 +870,7 @@ export function PublicationForm({
         <div className="space-y-4">
           <section className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm sm:p-5">
             <StepHeading
-              title="Experiencia e idiomas"
+              title={t("Experiencia e idiomas")}
             />
 
             <div className="mt-4">
@@ -955,7 +955,7 @@ export function PublicationForm({
 
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               <FormField
-                label="Qué incluye"
+                label={t("Qué incluye")}
                 required
               >
                 <Textarea
@@ -981,7 +981,7 @@ export function PublicationForm({
               </FormField>
 
               <FormField
-                label="Qué no incluye"
+                label={t("Qué no incluye")}
                 required
               >
                 <Textarea
@@ -1037,7 +1037,7 @@ export function PublicationForm({
         <div className="space-y-4">
           <section className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm sm:p-5">
             <StepHeading
-              title="Imagen y revisión"
+              title={t("Imagen y revisión")}
             />
 
             <div className="mt-4">
@@ -1050,7 +1050,7 @@ export function PublicationForm({
 
               <div className="mt-4">
                 <FormField
-                  label="URL de la imagen"
+                  label={t("URL de la imagen")}
                   required
                 >
                   <div className="relative">
@@ -1092,7 +1092,7 @@ export function PublicationForm({
                       src={
                         value.mainImageUrl
                       }
-                      alt="Vista previa de la publicación"
+                      alt={t("Vista previa de la publicación")}
                       className="h-44 w-full object-cover"
                     />
                   </div>
@@ -1144,7 +1144,7 @@ export function PublicationForm({
 
             <div className="mt-4 grid gap-2.5 md:grid-cols-2">
               <ReviewItem
-                label="Tipo de servicio"
+                label={t("Tipo de servicio")}
                 value={
                   value.serviceType ===
                   "TRANSPORT"
@@ -1162,7 +1162,7 @@ export function PublicationForm({
               />
 
               <ReviewItem
-                label="Nombre"
+                label={t("Nombre")}
                 value={
                   value.title?.trim() ||
                   "Sin definir"
@@ -1175,7 +1175,7 @@ export function PublicationForm({
               />
 
               <ReviewItem
-                label="Destino"
+                label={t("Destino")}
                 value={
                   value.destination?.trim() ||
                   "Sin definir"
@@ -1188,7 +1188,7 @@ export function PublicationForm({
               />
 
               <ReviewItem
-                label="Precio"
+                label={t("Precio")}
                 value={
                   value.pricePerPerson !==
                     null &&
@@ -1207,7 +1207,7 @@ export function PublicationForm({
               />
 
               <ReviewItem
-                label="Duración"
+                label={t("Duración")}
                 value={
                   value.durationMinutes
                     ? durationLabel(value.durationMinutes)
@@ -1221,7 +1221,7 @@ export function PublicationForm({
               />
 
               <ReviewItem
-                label="Capacidad predeterminada"
+                label={t("Capacidad predeterminada")}
                 value={
                   value.defaultCapacity
                     ? `${value.defaultCapacity} personas`
@@ -1235,7 +1235,7 @@ export function PublicationForm({
               />
 
               <ReviewItem
-                label="Idiomas"
+                label={t("Idiomas")}
                 value={
                   getLanguageNames(
                     value.languageIds ??
@@ -1250,7 +1250,7 @@ export function PublicationForm({
               />
 
               <ReviewItem
-                label="Punto de encuentro"
+                label={t("Punto de encuentro")}
                 value={
                   value.meetingPoint?.trim() ||
                   "Sin definir"

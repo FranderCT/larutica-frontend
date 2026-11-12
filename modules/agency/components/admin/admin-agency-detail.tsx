@@ -300,8 +300,8 @@ export default function AdminAgencyDetail({
               </div>
             </div>
             <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-4">
-              <InfoRow icon={MapPin} label="Ubicación" value={location} />
-              <InfoRow icon={FileText} label="Fecha de registro" value={formatDate(agency.createdAt, language)} />
+              <InfoRow icon={MapPin} label={t("Ubicación")} value={location} />
+              <InfoRow icon={FileText} label={t("Fecha de registro")} value={formatDate(agency.createdAt, language)} />
             </dl>
           </div>
           <div className="h-40 w-full shrink-0 overflow-hidden rounded-lg bg-muted sm:h-44 sm:w-64 lg:w-80">
@@ -333,8 +333,8 @@ export default function AdminAgencyDetail({
               <p className="mt-3 whitespace-pre-wrap break-words text-sm leading-7 text-muted-foreground">{agency.description || t("Sin información")}</p>
             </section>
             <div className="space-y-6 lg:border-l lg:border-border lg:pl-8">
-              <TagList title="Categorías" values={agency.categories.map(item => item.name)} />
-              <TagList title="Idiomas" values={agency.languages.map(item => item.name)} />
+              <TagList title={t("Categorías")} values={agency.categories.map(item => item.name)} />
+              <TagList title={t("Idiomas")} values={agency.languages.map(item => item.name)} />
             </div>
           </div>
         </Tabs.Content>
@@ -344,16 +344,16 @@ export default function AdminAgencyDetail({
             <section>
               <h2 className="!m-0 !text-base !font-semibold !leading-6 !tracking-normal">{t("Contacto")}</h2>
               <dl className="mt-5 grid gap-6 sm:grid-cols-2">
-                <InfoRow icon={Mail} label="Correo" value={agency.email} />
-                <InfoRow icon={Phone} label="Teléfono" value={agency.phone} />
+                <InfoRow icon={Mail} label={t("Correo")} value={agency.email} />
+                <InfoRow icon={Phone} label={t("Teléfono")} value={agency.phone} />
                 <InfoRow icon={Globe2} label="Sitio web" value={agency.website} />
               </dl>
             </section>
             <section className="lg:border-l lg:border-border lg:pl-8">
               <h2 className="!m-0 !text-base !font-semibold !leading-6 !tracking-normal">{t("Ubicación")}</h2>
               <dl className="mt-5 space-y-6">
-                <InfoRow icon={MapPin} label="Ubicación" value={location} />
-                <InfoRow icon={MapPin} label="Dirección exacta" value={agency.exactAddress} />
+                <InfoRow icon={MapPin} label={t("Ubicación")} value={location} />
+                <InfoRow icon={MapPin} label={t("Dirección exacta")} value={agency.exactAddress} />
               </dl>
             </section>
           </div>
@@ -363,9 +363,9 @@ export default function AdminAgencyDetail({
           <section className="mb-6 border-b border-border pb-6">
             <h2 className="!m-0 !text-base !font-semibold !leading-6 !tracking-normal">{t("Información de la cuenta")}</h2>
             <dl className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <InfoRow icon={Building2} label="Tipo de negocio" value={t(businessTypeLabel(agency.businessType))} />
+              <InfoRow icon={Building2} label={t("Tipo de negocio")} value={t(businessTypeLabel(agency.businessType))} />
               <InfoRow icon={ShieldCheck} label="Términos" value={t(agency.acceptedTerms ? "Términos aceptados" : "Términos no aceptados")} />
-              <InfoRow icon={FileText} label="Fecha de registro" value={formatDate(agency.createdAt, language)} />
+              <InfoRow icon={FileText} label={t("Fecha de registro")} value={formatDate(agency.createdAt, language)} />
             </dl>
           </section>
           <VerificationDocumentViewer agencyId={agency.id} hasDocument={Boolean(agency.verificationDocumentUrl)} documentPath={agency.verificationDocumentUrl} className="rounded-none bg-transparent p-0" />

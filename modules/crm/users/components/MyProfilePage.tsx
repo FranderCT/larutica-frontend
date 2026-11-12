@@ -128,21 +128,21 @@ function ProfileInfoPanel({ profile }: { profile: SystemUser }) {
       </div>
 
       <div className="divide-y">
-        <InfoRow icon={Mail} label="Correo" value={profile.email || "—"} />
+        <InfoRow icon={Mail} label={t("Correo")} value={profile.email || "—"} />
         <InfoRow
           icon={Phone}
-          label="Teléfono"
+          label={t("Teléfono")}
           value={profile.phone ? formatPhone(profile.phone) : "—"}
         />
-        <InfoRow icon={Shield} label="Rol" value={t(profile.role)} />
-        <InfoRow icon={UserRound} label="Estado" value={t(profile.status)} />
+        <InfoRow icon={Shield} label={t("Rol")} value={t(profile.role)} />
+        <InfoRow icon={UserRound} label={t("Estado")} value={t(profile.status)} />
         {(profile.role === "Agencia" || profile.role === "Transporte") && (
           <InfoRow
             icon={Building2}
             label={
               profile.role === "Agencia"
-                ? "Nombre de la agencia"
-                : "Nombre del servicio"
+                ? t("Nombre de la agencia")
+                : t("Nombre del servicio")
             }
             value={profile.businessName || "—"}
           />
@@ -268,7 +268,7 @@ function ChangePasswordForm({
           onClick={clearFields}
         >{t("Limpiar ")}</Button>
         <Button type="submit" className="!text-sm" disabled={submitting}>
-          {submitting ? "Guardando…" : t("Cambiar contraseña")}
+          {submitting ? t("Guardando…") : t("Cambiar contraseña")}
         </Button>
       </div>
     </form>

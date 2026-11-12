@@ -1,5 +1,7 @@
 "use client"
 
+import { usePreferences } from "@/lib/preferences/Preferences";
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { PanelLeftIcon, Menu } from "lucide-react"
@@ -163,6 +165,7 @@ function Sidebar({
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
 }) {
+  const { t } = usePreferences()
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
   if (collapsible === "none") {
@@ -196,8 +199,8 @@ function Sidebar({
           side={side}
         >
           <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+            <SheetTitle>{t("Navegación lateral")}</SheetTitle>
+            <SheetDescription>{t("Muestra la navegación lateral en dispositivos móviles.")}</SheetDescription>
           </SheetHeader>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
@@ -258,6 +261,7 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
+  const { t } = usePreferences()
   const { toggleSidebar, isMobile } = useSidebar()
 
   return (
@@ -267,7 +271,7 @@ function SidebarTrigger({
       variant="ghost"
       size="icon"
       className={cn("size-7", className)}
-      aria-label="Alternar barra lateral"
+      aria-label={t("Alternar barra lateral")}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
@@ -275,12 +279,13 @@ function SidebarTrigger({
       {...props}
     >
       {isMobile ? <Menu className="size-4" /> : <PanelLeftIcon />}
-      <span className="sr-only">Alternar barra lateral</span>
+      <span className="sr-only">{t("Alternar barra lateral")}</span>
     </Button>
   )
 }
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
+  const { t } = usePreferences()
   const { toggleSidebar } = useSidebar()
 
   return (
@@ -288,10 +293,10 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
       type="button"
       data-sidebar="rail"
       data-slot="sidebar-rail"
-      aria-label="Toggle Sidebar"
+      aria-label={t("Alternar barra lateral")}
       tabIndex={-1}
       onClick={toggleSidebar}
-      title="Toggle Sidebar"
+      title={t("Alternar barra lateral")}
       className={cn(
         "hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex",
         "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",

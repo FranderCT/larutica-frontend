@@ -132,7 +132,7 @@ export function Catalog() {
             <p>{t("Encuentra una excursión o transporte, elige tu salida y solicita tu reserva con un proveedor local.")}</p>
             <a className="booking-hero-link" href="#experiencias">{t("Encuentra tu próxima salida")}</a>
           </div>
-          <img src="/playa.jpg" alt="Playa y costa de Costa Rica" fetchPriority="high"/>
+          <img src="/playa.jpg" alt={t("Playa y costa de Costa Rica")} fetchPriority="high"/>
         </section>
 
         <section className="booking-container" id="experiencias">

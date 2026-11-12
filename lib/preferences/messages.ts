@@ -1,5 +1,6 @@
 import { dashboardEnglish } from './dashboard-messages.ts';
 import {bookingEnglish} from './booking-messages.ts';
+import { interfaceEnglish } from './interface-messages.ts';
 // Interface messages only; user and provider content is never rewritten.
 export const english: Record<string,string> = Object.fromEntries([
 ['Explorar','Explore'],['Destinos','Destinations'],['Mi viaje','My trip'],['Ayuda','Help'],['Accesibilidad','Accessibility'],['Mi cuenta','My account'],['Cerrar sesión','Sign out'],['Cerrando sesión…','Signing out…'],['Cargando cuenta…','Loading account…'],['Ingresar','Sign in'],['Inicio','Home'],['Volver al inicio','Back to home'],['Volver al sitio','Back to website'],['LaRutica, volver al inicio','LaRutica, back to home'],['Ir al contenido principal','Skip to main content'],['Navegación principal','Main navigation'],['Saltar al contenido','Skip to content'],['Saltar al formulario','Skip to form'],
@@ -241,4 +242,4 @@ for (const [key, value] of Object.entries({
 "No se pudo guardar la contraseña.":"We could not save the password.",
 })) { english[key] ??= value; }
 
-Object.assign(english,bookingEnglish);
+Object.assign(english, bookingEnglish, interfaceEnglish);

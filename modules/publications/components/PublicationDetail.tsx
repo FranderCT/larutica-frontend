@@ -275,7 +275,7 @@ export function PublicationDetail({
                 size={16}
               />
             }
-            label="Precio"
+            label={t("Precio")}
             value={
               publication.pricePerPerson !==
               null
@@ -291,7 +291,7 @@ export function PublicationDetail({
                 size={16}
               />
             }
-            label="Destino"
+            label={t("Destino")}
             value={
               publication.destination ??
               "Sin definir"
@@ -303,7 +303,7 @@ export function PublicationDetail({
                 size={16}
               />
             }
-            label="Duración"
+            label={t("Duración")}
             value={
               publication.durationMinutes
                 ? durationLabel(publication.durationMinutes)
@@ -316,7 +316,7 @@ export function PublicationDetail({
                 size={16}
               />
             }
-            label="Capacidad"
+            label={t("Capacidad")}
             value={
               publication.defaultCapacity
                 ? `${publication.defaultCapacity} personas`
@@ -398,7 +398,7 @@ export function PublicationDetail({
           </div>
         </Tabs.Content>
         <Tabs.Content value="details" className={panelClassName}>
-          {publication.journey ? <section className="mb-6 border-b border-border pb-6"><h2 className="lr-section-title">Trayecto</h2><JourneyView journey={publication.journey} meetingPoint={publication.meetingPoint}/></section> : null}
+          {publication.journey ? <section className="mb-6 border-b border-border pb-6"><h2 className="lr-section-title">{t("Trayecto")}</h2><JourneyView journey={publication.journey} meetingPoint={publication.meetingPoint}/></section> : null}
           {!publication.journey ? <section className="mb-6 min-w-0 border-b border-border pb-6">
         <div className="flex items-center gap-2">
           <MapPin

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="legal-page">
+    <main className="legal-page" lang="es">
       <div className="legal-content">
         <Link className="back-link" href="/">← Volver a LaRutica</Link>
         <p className="eyebrow">LaRutica · Costa Rica</p>

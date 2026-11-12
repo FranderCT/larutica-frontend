@@ -1,5 +1,6 @@
 "use client";
 
+import { localeFor, type Language } from "@/lib/preferences/format";
 import { usePreferences } from "@/lib/preferences/Preferences";
 
 import {
@@ -61,9 +62,10 @@ function toCostaRicaIso(
 
 function formatDate(
   value: string,
+  language: Language,
 ): string {
   return new Intl.DateTimeFormat(
-    "es-CR",
+    localeFor(language),
     {
       day: "2-digit",
       month: "short",
@@ -78,9 +80,10 @@ function formatDate(
 
 function formatTime(
   value: string,
+  language: Language,
 ): string {
   return new Intl.DateTimeFormat(
-    "es-CR",
+    localeFor(language),
     {
       hour: "numeric",
       minute: "2-digit",
@@ -149,7 +152,7 @@ export function PublicationDepartures({
 }: {
   publication: Publication;
 }) {
-  const { t } =
+  const { t, language } =
     usePreferences();
 
   const [
@@ -683,6 +686,7 @@ export function PublicationDepartures({
                           <p className="truncate text-sm font-semibold text-[var(--ink)]">
                             {formatDate(
                               departure.startAt,
+                              language,
                             )}
                           </p>
 
@@ -697,11 +701,13 @@ export function PublicationDepartures({
                             <span className="truncate">
                               {formatTime(
                                 departure.startAt,
+                                language,
                               )}
 
                               {departure.endAt
                                 ? ` - ${formatTime(
                                     departure.endAt,
+                                    language,
                                   )}`
                                 : ""}
                             </span>

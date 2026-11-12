@@ -1,5 +1,6 @@
 "use client";
 
+import { usePreferences } from "@/lib/preferences/Preferences";
 import * as React from "react";
 import { ChevronDown, Globe } from "lucide-react";
 import type { Country } from "react-phone-number-input";
@@ -51,6 +52,7 @@ export function PhoneCountrySelect({
   name,
   "aria-label": ariaLabel,
 }: PhoneCountrySelectProps) {
+  const { t } = usePreferences();
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const searchInputRef = React.useRef<HTMLInputElement>(null);
@@ -93,7 +95,7 @@ export function PhoneCountrySelect({
           <button
             type="button"
             name={name}
-            aria-label={ariaLabel ?? "Seleccionar país"}
+            aria-label={ariaLabel ?? t("Seleccionar país")}
             aria-expanded={open}
             aria-haspopup="listbox"
             disabled={isDisabled}
@@ -141,18 +143,18 @@ export function PhoneCountrySelect({
             ref={searchInputRef}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Buscar país..."
+            placeholder={t("Buscar país...")}
             className="h-12"
             autoComplete="off"
           />
           <ul
             className="mt-2 max-h-52 overflow-y-auto"
             role="listbox"
-            aria-label="Países"
+            aria-label={t("Países")}
           >
             {filteredOptions.length === 0 ? (
               <li className="px-2 py-3 text-center text-sm text-muted-foreground">
-                Sin resultados
+                {t("\r\n                Sin resultados\r\n              ")}
               </li>
             ) : (
               filteredOptions.map((option) => (

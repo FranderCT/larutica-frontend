@@ -1,4 +1,5 @@
 "use client";
+import { usePreferences } from "@/lib/preferences/Preferences";
 import { useEffect, useRef, useState } from "react";
 import type { Map as LibreMap, Marker } from "maplibre-gl";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ export function JourneyMap({ points, geometry, meetingLocation, onMove, onPick }
   meetingLocation?: JourneyPlace|null; onMove?: (index:number,lat:number,lon:number)=>void;
   onPick?: (lat:number,lon:number,legIndex?:number)=>void;
 }) {
+  const { t } = usePreferences();
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LibreMap|null>(null);
   const markers = useRef<Marker[]>([]);
@@ -84,8 +86,8 @@ export function JourneyMap({ points, geometry, meetingLocation, onMove, onPick }
     return ()=>{cancelled=true;};
   },[ready,points,geometry,meetingLocation,onMove]);
   return <div className="lr-map-frame">
-    <div ref={container} className="lr-journey-map" role="region" aria-label="Mapa del trayecto"/>
-    {!ready && !error && <p className="lr-map-loading" role="status">Cargando mapa…</p>}
-    {error && <div className="lr-map-error" role="status"><p>{error}</p><Button type="button" variant="outline" size="sm" onClick={()=>setAttempt(n=>n+1)}>Reintentar mapa</Button></div>}
+    <div ref={container} className="lr-journey-map" role="region" aria-label={t("Mapa del trayecto")}/>
+    {!ready && !error && <p className="lr-map-loading" role="status">{t("Cargando mapa…")}</p>}
+    {error && <div className="lr-map-error" role="status"><p>{error}</p><Button type="button" variant="outline" size="sm" onClick={()=>setAttempt(n=>n+1)}>{t("Reintentar mapa")}</Button></div>}
   </div>;
 }

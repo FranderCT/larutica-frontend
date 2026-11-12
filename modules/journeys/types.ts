@@ -24,18 +24,19 @@ export function journeyReady(journey: Journey | null | undefined): boolean {
     && !!journey.confirmedAt
     && (journey.mode === "locations" || (!!journey.geometry && !!journey.integrity));
 }
-export function placeContext(place: JourneyPlace): string {
-  return [place.district && `Distrito: ${place.district}`, place.canton && `Cantón: ${place.canton}`,
-    place.province && `Provincia: ${place.province}`, place.locality && !place.district && `Localidad: ${place.locality}`,
+export function placeContext(place: JourneyPlace, t = (label: string) => label): string {
+  return [place.district && `${t("Distrito")}: ${place.district}`, place.canton && `${t("Cantón")}: ${place.canton}`,
+    place.province && `${t("Provincia")}: ${place.province}`, place.locality && !place.district && `${t("Localidad")}: ${place.locality}`,
     place.country].filter(Boolean).join(" · ");
 }
 export function placeTypeLabel(place: JourneyPlace): string {
   const labels: Record<string,string> = {city:"Ciudad o localidad",street:"Calle",amenity:"Lugar de interés",building:"Edificio",suburb:"Barrio",district:"Distrito",state:"Provincia",county:"Cantón",postcode:"Zona postal",country:"País"};
   return place.type ? labels[place.type] ?? "Ubicación" : "Ubicación";
 }
-export function journeyMetrics(journey: Journey): string {
-  if (journey.mode === "locations") return "Ubicaciones de referencia · sin trazado automático";
-  const km = ((journey.distance ?? 0) / 1000).toLocaleString("es-CR", { maximumFractionDigits: 1 });
+export function journeyMetrics(journey: Journey, language: "es" | "en" = "es"): string {
+  if (journey.mode === "locations") return language === "en" ? "Reference locations · no automatic route" : "Ubicaciones de referencia · sin trazado automático";
+  const km = ((journey.distance ?? 0) / 1000).toLocaleString(language === "en" ? "en-US" : "es-CR", { maximumFractionDigits: 1 });
   const min = Math.max(1, Math.round((journey.duration ?? 0) / 60));
-  return `${km} km · ${Math.floor(min / 60) ? Math.floor(min / 60) + " h " : ""}${min % 60} min de recorrido estimado`;
+  const time = `${Math.floor(min / 60) ? Math.floor(min / 60) + " h " : ""}${min % 60} min`;
+  return language === "en" ? `${km} km · ${time} estimated travel time` : `${km} km · ${time} de recorrido estimado`;
 }

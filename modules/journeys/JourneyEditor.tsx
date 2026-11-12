@@ -1,4 +1,5 @@
 "use client";
+import { usePreferences } from "@/lib/preferences/Preferences";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Plus, Trash2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ export function JourneyEditor({value,onChange,meetingPoint,onMeetingPointChange,
   value:Journey|null|undefined;onChange:(value:Journey|null)=>void;
   meetingPoint:string;onMeetingPointChange:(text:string)=>void;allowLegacy?:boolean;isExcursion?:boolean;
 }) {
+  const { t, language } = usePreferences();
   const initialEmpty=useRef(emptyJourney());
   const journey=value ?? initialEmpty.current;
   const current=useRef(journey); current.current=journey;
@@ -123,65 +125,65 @@ export function JourneyEditor({value,onChange,meetingPoint,onMeetingPointChange,
     const points=[...journey.points];[points[index],points[index+direction]]=[points[index+direction],points[index]];patch({points});
   }
   return <Card className="lr-journey-editor">
-    <CardHeader><SectionHeading title="Define el trayecto" description="Selecciona los lugares, revisa el recorrido y confirma antes de continuar."/></CardHeader>
+    <CardHeader><SectionHeading title={t("Define el trayecto")} description={t("Selecciona los lugares, revisa el recorrido y confirma antes de continuar.")}/></CardHeader>
     <CardContent>
       <div className="lr-journey-workspace">
         <div className="lr-journey-controls">
-          <div className="lr-place-search"><label htmlFor="journey-mode">Tipo de recorrido</label>
+          <div className="lr-place-search"><label htmlFor="journey-mode">{t("Tipo de recorrido")}</label>
             <select id="journey-mode" className="lr-journey-select" value={journey.mode}
               onChange={e=>patch({mode:e.target.value as Journey["mode"]})}>
-              <option value="drive">En vehículo</option><option value="walk">A pie</option><option value="hike">Senderismo</option>
-              <option value="locations">Acuático u otro: solo ubicaciones</option>
+              <option value="drive">{t("En vehículo")}</option><option value="walk">{t("A pie")}</option><option value="hike">{t("Senderismo")}</option>
+              <option value="locations">{t("Acuático u otro: solo ubicaciones")}</option>
             </select>
           </div>
           {journey.points.map((place,index)=><div key={index} className="lr-journey-stop">
-            <PlaceSearch label={index===0?"A · Salida":index===journey.points.length-1?"B · Llegada":"Parada "+index} value={place} onChange={p=>selectPoint(index,p)}/>
+            <PlaceSearch label={index===0?t("A · Salida"):index===journey.points.length-1?t("B · Llegada"):t("Parada ")+index} value={place} onChange={p=>selectPoint(index,p)}/>
             {index>0 && index<journey.points.length-1 && <div className="lr-journey-stop-actions">
-              <Button type="button" size="sm" variant="ghost" disabled={index===1} aria-label={"Subir parada "+index} onClick={()=>reorder(index,-1)}><ArrowUp size={16}/></Button>
-              <Button type="button" size="sm" variant="ghost" disabled={index===journey.points.length-2} aria-label={"Bajar parada "+index} onClick={()=>reorder(index,1)}><ArrowDown size={16}/></Button>
-              <Button type="button" size="sm" variant="ghost" aria-label={"Eliminar parada "+index} onClick={()=>patch({points:journey.points.filter((_,i)=>i!==index)})}><Trash2 size={16}/></Button>
+              <Button type="button" size="sm" variant="ghost" disabled={index===1} aria-label={t("Subir parada ")+index} onClick={()=>reorder(index,-1)}><ArrowUp size={16}/></Button>
+              <Button type="button" size="sm" variant="ghost" disabled={index===journey.points.length-2} aria-label={t("Bajar parada ")+index} onClick={()=>reorder(index,1)}><ArrowDown size={16}/></Button>
+              <Button type="button" size="sm" variant="ghost" aria-label={t("Eliminar parada ")+index} onClick={()=>patch({points:journey.points.filter((_,i)=>i!==index)})}><Trash2 size={16}/></Button>
             </div>}
           </div>)}
-          <Button type="button" variant="outline" disabled={journey.points.length>=12} onClick={()=>patch({points:[...journey.points.slice(0,-1),null,journey.points.at(-1)??null]})}><Plus size={16}/> Añadir parada</Button>
-          <div className="lr-journey-meeting"><h3 className="font-semibold text-sm">Punto de encuentro</h3>
-            <p>Puede ser distinto del inicio del recorrido.</p>
-            <label htmlFor="journey-meeting-note">Indicaciones del punto de encuentro</label>
-            <Input id="journey-meeting-note" value={meetingPoint} placeholder="Ej. Frente a la iglesia, 15 minutos antes"
+          <Button type="button" variant="outline" disabled={journey.points.length>=12} onClick={()=>patch({points:[...journey.points.slice(0,-1),null,journey.points.at(-1)??null]})}><Plus size={16}/>{t(" Añadir parada")}</Button>
+          <div className="lr-journey-meeting"><h3 className="font-semibold text-sm">{t("Punto de encuentro")}</h3>
+            <p>{t("Puede ser distinto del inicio del recorrido.")}</p>
+            <label htmlFor="journey-meeting-note">{t("Indicaciones del punto de encuentro")}</label>
+            <Input id="journey-meeting-note" value={meetingPoint} placeholder={t("Ej. Frente a la iglesia, 15 minutos antes")}
               onChange={e=>{onMeetingPointChange(e.target.value);patch({meetingDirectionsAuto:false},false);}}/>
             <Button type="button" variant="ghost" size="sm" disabled={!journey.points[0]} className="mt-2" onClick={()=>{
               const origin=journey.points[0];if(origin){onMeetingPointChange(origin.label);patch({meetingLocation:origin,meetingAtOrigin:true,meetingDirectionsAuto:true},false);}
-            }}>El encuentro será en la salida</Button>
-            <details className="mt-3"><summary>Ubicar otro punto de encuentro en el mapa</summary>
-              <div className="mt-3"><PlaceSearch label="E · Ubicación del encuentro (opcional)" value={journey.meetingLocation} onChange={meetingLocation=>patch({meetingLocation,meetingAtOrigin:false,meetingDirectionsAuto:false},false)}/></div>
-              {journey.meetingLocation && <Button type="button" variant="ghost" size="sm" onClick={()=>patch({meetingLocation:null,meetingAtOrigin:false,meetingDirectionsAuto:false},false)}>Quitar ubicación del encuentro</Button>}
+            }}>{t("El encuentro será en la salida")}</Button>
+            <details className="mt-3"><summary>{t("Ubicar otro punto de encuentro en el mapa")}</summary>
+              <div className="mt-3"><PlaceSearch label={t("E · Ubicación del encuentro (opcional)")} value={journey.meetingLocation} onChange={meetingLocation=>patch({meetingLocation,meetingAtOrigin:false,meetingDirectionsAuto:false},false)}/></div>
+              {journey.meetingLocation && <Button type="button" variant="ghost" size="sm" onClick={()=>patch({meetingLocation:null,meetingAtOrigin:false,meetingDirectionsAuto:false},false)}>{t("Quitar ubicación del encuentro")}</Button>}
             </details>
           </div>
         </div>
         <div className="lr-journey-preview">
           <div className="lr-route-edit-toolbar">
-            <Button type="button" variant="outline" aria-pressed={editing} disabled={!isExcursion && (!journey.points[0] || !journey.points.at(-1))} onClick={toggleEditing}>{isExcursion?(editing?"Terminar ruta":"Empezar edición"):(editing?"Terminar edición del mapa":"Editar trayecto en el mapa")}</Button>
-            {editing && journey.points[0] && journey.points.at(-1) && <div><label htmlFor="journey-map-action">Al hacer clic en el mapa</label><select id="journey-map-action" className="lr-journey-select" value={mapAction} onChange={event=>setMapAction(event.target.value as typeof mapAction)}><option value="stop">Añadir parada</option><option value="origin">Mover salida</option><option value="destination">Mover llegada</option></select></div>}
+            <Button type="button" variant="outline" aria-pressed={editing} disabled={!isExcursion && (!journey.points[0] || !journey.points.at(-1))} onClick={toggleEditing}>{isExcursion?(editing?t("Terminar ruta"):t("Empezar edición")):(editing?t("Terminar edición del mapa"):t("Editar trayecto en el mapa"))}</Button>
+            {editing && journey.points[0] && journey.points.at(-1) && <div><label htmlFor="journey-map-action">{t("Al hacer clic en el mapa")}</label><select id="journey-map-action" className="lr-journey-select" value={mapAction} onChange={event=>setMapAction(event.target.value as typeof mapAction)}><option value="stop">{t("Añadir parada")}</option><option value="origin">{t("Mover salida")}</option><option value="destination">{t("Mover llegada")}</option></select></div>}
           </div>
-          {editing && <p className="lr-place-help">{isExcursion && !journey.points[0]?"Haz clic en el mapa para elegir la salida. El siguiente clic definirá la llegada.":isExcursion && !journey.points.at(-1)?"Haz clic en el mapa para elegir la llegada. Después podrás añadir paradas y ajustar el recorrido.":"Haz clic sobre un tramo para insertar una parada allí; sobre el fondo se añade antes de la llegada. También puedes arrastrar los marcadores. Cada cambio recalcula el recorrido."}{busy?" Espera a que termine este cálculo para añadir otro punto con un clic.":""}</p>}
+          {editing && <p className="lr-place-help">{isExcursion && !journey.points[0]?t("Haz clic en el mapa para elegir la salida. El siguiente clic definirá la llegada."):isExcursion && !journey.points.at(-1)?t("Haz clic en el mapa para elegir la llegada. Después podrás añadir paradas y ajustar el recorrido."):t("Haz clic sobre un tramo para insertar una parada allí; sobre el fondo se añade antes de la llegada. También puedes arrastrar los marcadores. Cada cambio recalcula el recorrido.")}{busy?t(" Espera a que termine este cálculo para añadir otro punto con un clic."):""}</p>}
           <JourneyMap points={journey.points} geometry={journey.geometry} meetingLocation={journey.meetingLocation} onMove={!isExcursion || editing?move:undefined} onPick={editing && !busy?pick:undefined}/>
-          {mapNotice && <p className="lr-place-help" role="status">{mapNotice}</p>}
-          <p className="lr-place-help">A: salida · B: llegada · números: paradas · E: encuentro. {isExcursion && !editing?"Pulsa Empezar edición para ajustar el recorrido.":"Puedes arrastrar los marcadores del recorrido para precisarlos."}</p>
+          {mapNotice && <p className="lr-place-help" role="status">{t(mapNotice)}</p>}
+          <p className="lr-place-help">{t("A: salida · B: llegada · números: paradas · E: encuentro. ")}{isExcursion && !editing?t("Pulsa Empezar edición para ajustar el recorrido."):t("Puedes arrastrar los marcadores del recorrido para precisarlos.")}</p>
           <div className="lr-journey-status" aria-live="polite">
-            {busy?<p role="status">Calculando el trayecto…</p>:journey.mode==="locations"?
-              <p>Se mostrarán las ubicaciones, sin dibujar una ruta ni estimar distancia o tiempo. Esta opción sirve para actividades acuáticas u otros recorridos sin cobertura.</p>:
-              journey.geometry?<><strong>{journeyMetrics(journey)}</strong><p>Estimación del recorrido; no representa la duración total de la actividad ni tráfico en tiempo real.</p></>:
-              <p>{journey.points.some(p=>!p) ? "Selecciona salida y llegada para calcular una propuesta." : error ? "El trayecto no se ha podido calcular. Revisa la indicación siguiente." : "Preparando el cálculo del trayecto…"}</p>}
+            {busy?<p role="status">{t("Calculando el trayecto…")}</p>:journey.mode==="locations"?
+              <p>{t("Se mostrarán las ubicaciones, sin dibujar una ruta ni estimar distancia o tiempo. Esta opción sirve para actividades acuáticas u otros recorridos sin cobertura.")}</p>:
+              journey.geometry?<><strong>{journeyMetrics(journey, language)}</strong><p>{t("Estimación del recorrido; no representa la duración total de la actividad ni tráfico en tiempo real.")}</p></>:
+              <p>{journey.points.some(p=>!p) ? t("Selecciona salida y llegada para calcular una propuesta.") : error ? t("El trayecto no se ha podido calcular. Revisa la indicación siguiente.") : t("Preparando el cálculo del trayecto…")}</p>}
           </div>
-          {error && <div className="lr-journey-error" role="alert"><p>{error}</p><Button type="button" variant="outline" size="sm" onClick={()=>setRetry(n=>n+1)}>Reintentar cálculo</Button></div>}
+          {error && <div className="lr-journey-error" role="alert"><p>{t(error)}</p><Button type="button" variant="outline" size="sm" onClick={()=>setRetry(n=>n+1)}>{t("Reintentar cálculo")}</Button></div>}
           {(!isExcursion || !editing) && <Button type="button" className="lr-journey-confirm" disabled={busy || resolving>0 || !!error || !!routeInputIssue(journey.points,journey.mode) || (journey.mode!=="locations" && (!journey.geometry || !journey.integrity))}
             onClick={()=>onChange({...journey,confirmedAt:new Date().toISOString()})}>
-            {resolving>0?"Consultando la ubicación…":ready?<><Check size={18}/> Trayecto confirmado</>:"Confirmar este trayecto"}
+            {resolving>0?t("Consultando la ubicación…"):ready?<><Check size={18}/>{t(" Trayecto confirmado")}</>:t("Confirmar este trayecto")}
           </Button>}
-          {ready && <p className="lr-place-help" role="status">El viajero verá este recorrido. Cualquier ajuste requiere confirmarlo nuevamente.</p>}
+          {ready && <p className="lr-place-help" role="status">{t("El viajero verá este recorrido. Cualquier ajuste requiere confirmarlo nuevamente.")}</p>}
         </div>
       </div>
-      {allowLegacy && <div className="lr-journey-legacy"><p>Esta publicación ya tenía información de ubicación sin mapa.</p>
-        <Button type="button" variant="ghost" onClick={()=>onChange(null)}>Conservar la ubicación anterior sin añadir trayecto</Button>
+      {allowLegacy && <div className="lr-journey-legacy"><p>{t("Esta publicación ya tenía información de ubicación sin mapa.")}</p>
+        <Button type="button" variant="ghost" onClick={()=>onChange(null)}>{t("Conservar la ubicación anterior sin añadir trayecto")}</Button>
       </div>}
     </CardContent>
   </Card>;
