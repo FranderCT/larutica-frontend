@@ -242,13 +242,11 @@ for (const [key, value] of Object.entries({
 "No se pudo guardar la contraseña.":"We could not save the password.",
 })) { english[key] ??= value; }
 
-Object.assign(english,bookingEnglish);
+Object.assign(english, bookingEnglish, interfaceEnglish);
 Object.assign(english, {
   'Ordenar por': 'Sort by', 'Recomendados': 'Recommended', 'Más reservados': 'Most booked', 'Mejor calificados': 'Top rated',
   'de 5 estrellas': 'out of 5 stars', 'Mostrando': 'Showing', 'calificación': 'rating', 'calificaciones': 'ratings',
 });
-
-for (const [key, value] of Object.entries(interfaceEnglish)) english[key] ??= value;
 
 // Landing: categorías, mensajes para lector de pantalla y metadatos de la pestaña.
 Object.assign(english, {
